@@ -177,13 +177,289 @@ ___View Templates___ are like the faucets, they exist to consume the data and re
 
 [Video: Modules and Dependency Injection](https://youtu.be/rS-xfQF9RVo)
 
+files: example1
+
+--
+--
+
+###Introduction to Angular Modules
+
+In the most simple terms, an ___Angular module____ is nothing more than a container for various parts of your app. Since an 
+Angular app does not have a single point of entry like some environments (such as a Main method in a C application), modules 
+provide the means for defining how the application can be started. 
+
+    Note: Angular uses a Declarative Programming approach to define user interfaces and connect components.
+
+In Angular, the word module refers to either an entire Angular application or independent components within that application, 
+such as controllers, services, filters, and directives. The components of Angular modules provide specific functionality 
+via self-contained sections of code. Through the process called ___Dependency Injection___, modules can share variables 
+between one another without having to reuse code.
+
+    Note: Dependency Injection will be discussed in greater detail in the next section.
+
+Angular modules are organized by function rather than type. This modular concept helps you better understand the context of 
+the different components, enables more direct access to the modules, and provides more streamlined testing of the modules.
+
+Modules provide a number of benefits including:
+
+* They may be reused in multiple applications
+* They can be loaded in any order (or in parallel)
+* Unit testing need only load the relevant modules, keeping the tests fast
+
+--
+--
+
+###Creating Angular Modules
+
+This is an example of defining a module in Angular.
+
+```javascript
+var myApp = angular.module("myApp", []);
+```
+
+In this example, the module is assigned to the variable ___myApp___ on the left side of the assignment statement. The right 
+side of the assignment is where the module is created, and in this example, is assigned the name `myApp`. The empty array `[]` 
+is where we can inject other modules as necessary. To bootstrap the module, you can use the HTML attribute `ng-app='myApp'` to 
+bootstrap your app, or you can use the `angular.bootstrap('myApp')` syntax. You specify the variable name when you bootstrap a module.
+
+    Note: "Bootstrap" is just a fancy way of saying "configure and start."
+
+To add controllers or other components to the module, reference the variable that you had defined for the module 
+(var `myApp` in this instance), and then add additional method calls, like so:
+
+```javascript
+var myApp = angular.module("myApp", []);
+myApp.controller("myController", [function() {}]);
+```
+
+Sometimes in applications, you will see a different following syntax:
+
+```javascript
+var myApp = angular.module("myApp", [])
+.controller("myController", [function() {}]);
+```
+
+--
+--
+
+###Bootstrapping Your Angular Modules
+
+Bootstrapping your module starts Angular and initializes the module, binding it to a section of the HTML that you wish to 
+transform into a dynamic view. ___Binding___ tells Angular that this piece of HTML will be controlled by Angular, which 
+will allow it to transform the HTML as the data changes, thereby creating a ___Dynamic View___ instead of the 
+___Static View___ of plain HTML.
+
+Your Angular app can affect as much or as little HTML as you prefer. For example, if you are defining a Single Page App, you will want to bootstrap your module on the <html> element, so that Angular can control the entirety of the page.
+
+```html
+<!DOCTYPE html>
+<html ng-app="myApp">
+
+<head>
+    <title>My Page</title>
+</head>
+
+<body ng-controller="myController">
+</body>
+
+</html>
+```
+
+If you want Angular to only control some of your page, for example, if you are implementing Angular in a website 
+that was built mostly out of jQuery, then you would do something like this:
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Page</title>
+</head>
+<body>
+
+    <div>
+    There's some content here not controlled by Angular.
+    </div>
+
+    <div ng-app='myApp'>
+    This is the content that is controlled by the Angular module 'myApp'.
+        <div ng-controller='myController'>
+        This is the content controlled by the controller myController.
+        </div>
+    
+    </div>
+
+</body>
+</html>
+```
+
+You could also use multiple Angular modules on the same page, enabling you to create two separate 
+applications to control different pieces of the page, like so:
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Page</title>
+</head>
+<body>
+
+    <div ng-app='myOtherApp'>
+    This is the content controlled by the Angular module 'myOtherApp'.
+    </div>
+    
+    <div ng-app='myApp'>
+    This is the content that is controlled by the Angular module 'myApp'.
+        <div ng-controller='myController'>
+        This is the content controlled by the controller myController.
+        </div>
+    
+    </div>
+
+</body>
+</html>
+```
+
+    Note: You'll notice the Angular bootstrap property begins with ng-. This is a standard preface for Angular object references and probably has something to do with the way it sounds (or, as some suspect, the fact that it makes up the second two letters of the word Angular). If you use Visual Studio or Visual Studio Code, you can use Intellisense to find Angular objects by typing ng- and letting Visual Studio provide you with options for what Angular objects are available.
+
+--
+--
+
+###Introduction to Dependency Injection
+
+<--! REDO-->
+
+___Dependency Injection___ (___DI___) is a software design pattern that manages how components in a system obtain 
+their dependencies. In Angular, Dependency Injection is responsible for:
+
+* Creating components
+* Maintaining a component's state
+* Providing components to other components, as required
+
+In Angular, DI allows us to share variables and functions between self-contained modules without having to reuse code, and maintains the state of each component.
+
+DI employs the injector, the service object(s) to be used, the client object that is depending on the services it uses, and the interfaces.
+
+    Note: The Angular injector is used for retrieving services as well as creating the necessary objects for us. See: [Angular Injector](https://docs.angularjs.org/api/ng/function/angular.injector).
+
+The injector introduces the services to the client. Often, it also constructs the client. An injector may connect together a very 
+complex object graph by treating an object like a client, and later, as a service for another client. The injector may actually 
+be many objects working together, but may not be the client.
+
+    Note: Services are discussed in our training course Advanced Framework Fundamentals with Angular. You can read more information on services in the documentation. [Read More](https://docs.angularjs.org/guide/services).
+
+When Angular compiles the HTML, it processes the ng-controller directive, which, in turn, asks the injector to create an instance of the controller and its dependencies. The application code simply declares the dependencies it needs without having to deal with the injector. Angular invokes certain functions, such as service factories and controllers, via the injector. You annotate these functions so that the injector knows what services to inject into the function.
+
+These functions are injectable with dependencies, just like the factory functions. The factory methods are registered with the modules. Components such as services, directives, filters, and animations are defined by an injectable factory method or constructor function. These components can be injected with service and value components as dependencies.
+
+DI allows a client the flexibility of being configurable. Only the client's behavior is fixed. The client may act on anything that supports the intrinsic interface the client expects. The client only needs to know about the intrinsic interfaces of the services since these define how the client may use the services. This separates the responsibilities of use and construction. The interfaces are the dependency types that the client expects.
+
+You use DI when defining components or when specifying functions to run at configuration and run time for a module by calling the config and run methods. The run method accepts a function, which can be injected with service, value, and constant components as dependencies. Note that you cannot inject providers into run blocks. The config method accepts a function, which can be injected with provider and constant components as dependencies. Note that you cannot inject service or value components into configuration.
+
+    See: [Understanding-Dependency-Injection](https://github.com/angular/angular.js/wiki/Understanding-Dependency-Injection)
+
+--
+--
+
+###Using Dependency Injection
+
+One of the most commonly used dependencies in Angular is $scope. Controllers need access to the $scope object in order to bind values to the view (this will be explained further in the Controllers section of the course). In order to have the $scope available, all we need is the following code in place:
+
+```javascript
+myApp.controller("myController", [
+    "$scope",
+    function($scope) {
+        // do stuff here      
+    }
+]);
+```
+
+The controller initialization is similar to the one we've already seen, with a few additions:
+
+On the second line, we have "$scope". This line specifies that we are adding a reference to the $scope object.
+On the next line after that, we have the $scope object as a parameter. This defines $scope as a variable name in our controller.
+
+--
+--
+
+###Labs Overview
+
+This module of the course includes a series of three tutorial style labs and one self-assessment lab. Some lab configuration is required.
+
+The tutorial labs are designed to help you set up Angular and start using Angular modules and dependency injection. These labs will lead you step-by-step through the process of bootstrapping Angular, creating modules, and implementing dependency injection.
+
+The final lab in this module is a self-assessment lab. In this lab, you will apply what you've learned during the tutorial labs to create a new HTML page and separate JavaScript files for the app and controller. The self-assessment lab gives you the opportunity to reinforce what you learned without providing the prescriptive step-by-step instructions that are provided in the tutorial labs.
 
 
+####Tutorial Labs 
+ 
+1. Bootstrapping Angular
+
+There are multiple ways to instantiate Angular so that it works with your HTML to produce a dynamic view. The method that you choose will depend on whether you are building out a whole Single Page App (SPA), or just a component for an existing website. In this lab you will set up your HTML for Angular, declare your app, and bootstrap Angular.
+
+2. Declaring Modules
+
+In Angular, the word module refers to either an entire Angular application or independent components within that application, such as controllers, services, filters, and directives. In this lab, you will declare a Controller and bind the Controller to your HTML.
+
+3. Implementing Dependency Injection
+
+Dependency Injection is one of the best features in Angular. In this lab, you will learn how to declare constants and inject dependencies into your controllers. Services, Factories, and Resources can also be injected, and in labs that come up in later modules you will learn about them as well.
 
 
+--
+--
 
+###Configuration: To Install Visual Studio Code
 
+In order to develop your Angular, let's set up Visual Studio Code.
 
+Visual Studio Code is lightweight and is compatible with most available hardware and platform versions.
 
+####Linux
 
+1. Download Visual Studio Code for your distribution, .deb for Debian-based distributions such as Ubuntu or .rpm for Red Hat-based distributions, 
+such as Fedora or CentOS.
+2. Install the package through a graphical user interface package manager by double-clicking on the package file, or through the command line:
+
+```
+bash # For .deb sudo dpkg -i .deb
+
+# For .rpm (Fedora 21 and below) sudo yum install .rpm
+
+# For .rpm (Fedora 22 and above) sudo dnf install .rpm
+```
+
+3. Visual Studio Code should now be available to run through the launcher or the command line by running code.
+Tip: Run code in any folder to start editing files in that folder.
+
+####Windows
+
+1. Download Visual Studio Code for Windows.
+2. To launch the setup process, double-click VSCodeSetup.exe.
+
+By default, Visual Studio Code is installed in the "C:\Program Files (x86)\Microsoft VS Code" folder location (for a 64-bit machine). The setup process should only take about a minute.
+
+    Note: .NET Framework 4.5 is required for Visual Studio Code. If you are using Windows 7, please ensure .NET Framework 4.5 is installed.
+
+For more detailed instructions and tips, visit the full Microsoft Visual Studio Code Installation Instruction guide here.
+
+--
+--
+
+###Configuration: To Set Up the Lab Environment
+
+You will be using Visual Studio Code to complete the labs in this module. You are welcome to use a different editor to modify your code files, but the lab instructions in this course will describe the steps that you need to perform using Visual Studio Code unless otherwise noted.
+
+There are just a couple of steps required to set up the lab environment for this module.
+
+Create a local folder on your development computer that you can use for your code project. Name the folder "Mod1Lab".
+
+    Note: You can use File Explorer or another tool of your choice to create the project folder.
+
+Save the following code file to the project folder that you created above.
+
+    Note: You will need to rename the file to match the file name shown below.
+
+* [helloworld.html](https://d37djvu3ytnwxt.cloudfront.net/assets/courseware/v1/27a0031ff3710edb42f71f7f1f162f11/asset-v1:Microsoft+DEV220x+3T2016+type@asset+block/Mod1_Angular_Lab_helloworld.txt)
+
+    Tip: To open a Save As file dialog, right-click the links above, and then click Save target as or Save Link as.
 
