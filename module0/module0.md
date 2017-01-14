@@ -82,7 +82,7 @@ and create easily testable components in your application.
 
 Angular uses a feature called ___directives___, allowing you to write HTML code, which then builds the HTML of your application instead of using 
 templates to generate the user interface. The ___ng-model___ directive binds the value of HTML controls (input, select, and text area) to application 
-data. Utilizing ___two-way data binding---, the values in your view are tightly bound to the data source. When a user interacts and updates a value, 
+data. Utilizing ___two-way data binding___, the values in your view are tightly bound to the data source. When a user interacts and updates a value, 
 your model is updated dynamically as well.
 
 When a web page is loaded, the browser creates a Document Object Model (DOM) of the page. Using the DOM, JavaScript can access and change all the 
